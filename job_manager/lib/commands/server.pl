@@ -64,10 +64,13 @@ sub mdiServer {
     $singularityLoad = getSingularityLoadCommand();
 
     # determine if and how the MDI installation supports Singularity
-    my $ymlFile = "$suiteDir/_config.yml";
-    my $yamls = loadYamlFromString( slurpFile($ymlFile) );
-    my $containerConfig = $$yamls{parsed}[0]{container};
-    my $suiteSupportsContainers = suiteSupportsAppContainer($containerConfig);
+    my ($containerConfig, $suiteSupportsContainers);
+    if ($isSuiteCentric){
+        my $ymlFile = "$suiteDir/_config.yml";
+        my $yamls = loadYamlFromString( slurpFile($ymlFile) );
+        $containerConfig = $$yamls{parsed}[0]{container};
+        $suiteSupportsContainers = suiteSupportsAppContainer($containerConfig);
+    }
 
     # validate a request for running server via Singularity, without possibility for system fallback
     if($runtime eq 'container' or $runtime eq 'singularity'){
